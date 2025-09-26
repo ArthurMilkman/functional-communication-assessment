@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Communication Profile - Revised</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .form-info {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #ffc107;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-field {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            color: #2a5298;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        
+        .info-field input, .info-field select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        
+        .info-field input:focus, .info-field select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+        
+        .assessment-content {
+            padding: 25px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #2a5298;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .assessment-table th {
+            background: #ffc107;
+            color: #333;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .assessment-table td {
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            background: white;
+        }
+        
+        .assessment-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+        
+        .assessment-table tr:hover td {
+            background: #e8f4ff;
+        }
+        
+        .severity-scale {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .scale-option {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .scale-option:hover {
+            background: #e8f4ff;
+            border-color: #2a5298;
+        }
+        
+        .scale-option input {
+            margin-right: 4px;
+        }
+        
+        .scale-option.selected {
+            background: #2a5298;
+            color: white;
+            border-color: #2a5298;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 6px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .checkbox-item:hover {
+            background: #e8f4ff;
+            border-color: #2a5298;
+        }
+        
+        .checkbox-item input {
+            margin-right: 6px;
+        }
+        
+        .checkbox-item.checked {
+            background: #fff8dc;
+            border-color: #ffc107;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.95em;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.1);
+        }
+        
+        .action-buttons {
+            padding: 25px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            border-top: 3px solid #ffc107;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #2a5298;
+            border: 2px solid #2a5298;
+        }
+        
+        .btn-secondary:hover {
+            background: #2a5298;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-success:hover {
+            background: #ffab00;
+            transform: translateY(-2px);
+        }
+        
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        
+        .matrix-table th {
+            background: #2a5298;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #1e3c72;
+        }
+        
+        .matrix-table td {
+            padding: 6px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            background: white;
+        }
+        
+        .matrix-table td:first-child {
+            background: #ffc107;
+            font-weight: 600;
+            text-align: left;
+            padding-left: 10px;
+        }
+        
+        .matrix-table tr:hover td:not(:first-child) {
+            background: #e8f4ff;
+        }
+        
+        @media (max-width: 768px) {
+            .assessment-table {
+                font-size: 0.85em;
+            }
+            
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Functional Communication Profile - Revised™</h1>
+            <p>Comprehensive Communication Assessment</p>
+        </header>
+        
+        <div class="form-info">
+            <h3>Client Information</h3>
+            <div class="info-grid">
+                <div class="info-field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name">
+                </div>
+                <div class="info-field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="info-field">
+                    <label for="birthdate">Birth Date</label>
+                    <input type="date" id="birthdate">
+                </div>
+                <div class="info-field">
+                    <label for="age">Age</label>
+                    <input type="text" id="age">
+                </div>
+                <div class="info-field">
+                    <label for="location">Location</label>
+                    <input type="text" id="location">
+                </div>
+                <div class="info-field">
+                    <label for="diagnosis">Diagnosis</label>
+                    <input type="text" id="diagnosis">
+                </div>
+                <div class="info-field">
+                    <label for="eval-type">Evaluation Type</label>
+                    <select id="eval-type">
+                        <option>Initial Evaluation</option>
+                        <option>Re-Evaluation</option>
+                        <option>Tri-Annual Evaluation</option>
+                    </select>
+                </div>
+                <div class="info-field">
+                    <label for="admin-method">Method of Administration</label>
+                    <select id="admin-method">
+                        <option>Direct Assessment</option>
+                        <option>Informal Observation</option>
+                        <option>Review of Records</option>
+                        <option>Informant Interview</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="assessment-content">
+            <!-- Speech & Language Evaluation Section -->
+            <div class="section">
+                <div class="section-header">SPEECH & LANGUAGE EVALUATION</div>
+                <div class="section-content">
+                    <table class="assessment-table">
+                        <thead>
+                            <tr>
+                                <th width="20%">Area</th>
+                                <th width="16%">Normal</th>
+                                <th width="16%">Mild</th>
+                                <th width="16%">Moderate</th>
+                                <th width="16%">Severe</th>
+                                <th width="16%">Profound</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sensory</strong></td>
+                                <td><input type="radio" name="sensory" value="normal"></td>
+                                <td><input type="radio" name="sensory" value="mild"></td>
+                                <td><input type="radio" name="sensory" value="moderate"></td>
+                                <td><input type="radio" name="sensory" value="severe"></td>
+                                <td><input type="radio" name="sensory" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Motor</strong></td>
+                                <td><input type="radio" name="motor" value="normal"></td>
+                                <td><input type="radio" name="motor" value="mild"></td>
+                                <td><input type="radio" name="motor" value="moderate"></td>
+                                <td><input type="radio" name="motor" value="severe"></td>
+                                <td><input type="radio" name="motor" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Behavior</strong></td>
+                                <td><input type="radio" name="behavior" value="normal"></td>
+                                <td><input type="radio" name="behavior" value="mild"></td>
+                                <td><input type="radio" name="behavior" value="moderate"></td>
+                                <td><input type="radio" name="behavior" value="severe"></td>
+                                <td><input type="radio" name="behavior" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Attentiveness</strong></td>
+                                <td><input type="radio" name="attentiveness" value="normal"></td>
+                                <td><input type="radio" name="attentiveness" value="mild"></td>
+                                <td><input type="radio" name="attentiveness" value="moderate"></td>
+                                <td><input type="radio" name="attentiveness" value="severe"></td>
+                                <td><input type="radio" name="attentiveness" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Receptive Language</strong></td>
+                                <td><input type="radio" name="receptive" value="normal"></td>
+                                <td><input type="radio" name="receptive" value="mild"></td>
+                                <td><input type="radio" name="receptive" value="moderate"></td>
+                                <td><input type="radio" name="receptive" value="severe"></td>
+                                <td><input type="radio" name="receptive" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Expressive Language</strong></td>
+                                <td><input type="radio" name="expressive" value="normal"></td>
+                                <td><input type="radio" name="expressive" value="mild"></td>
+                                <td><input type="radio" name="expressive" value="moderate"></td>
+                                <td><input type="radio" name="expressive" value="severe"></td>
+                                <td><input type="radio" name="expressive" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pragmatic/Social</strong></td>
+                                <td><input type="radio" name="pragmatic" value="normal"></td>
+                                <td><input type="radio" name="pragmatic" value="mild"></td>
+                                <td><input type="radio" name="pragmatic" value="moderate"></td>
+                                <td><input type="radio" name="pragmatic" value="severe"></td>
+                                <td><input type="radio" name="pragmatic" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Speech</strong></td>
+                                <td><input type="radio" name="speech" value="normal"></td>
+                                <td><input type="radio" name="speech" value="mild"></td>
+                                <td><input type="radio" name="speech" value="moderate"></td>
+                                <td><input type="radio" name="speech" value="severe"></td>
+                                <td><input type="radio" name="speech" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Voice</strong></td>
+                                <td><input type="radio" name="voice" value="normal"></td>
+                                <td><input type="radio" name="voice" value="mild"></td>
+                                <td><input type="radio" name="voice" value="moderate"></td>
+                                <td><input type="radio" name="voice" value="severe"></td>
+                                <td><input type="radio" name="voice" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Oral</strong></td>
+                                <td><input type="radio" name="oral" value="normal"></td>
+                                <td><input type="radio" name="oral" value="mild"></td>
+                                <td><input type="radio" name="oral" value="moderate"></td>
+                                <td><input type="radio" name="oral" value="severe"></td>
+                                <td><input type="radio" name="oral" value="profound"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fluency</strong></td>
+                                <td><input type="radio" name="fluency" value="normal"></td>
+                                <td><input type="radio" name="fluency" value="mild"></td>
+                                <td><input type="radio" name="fluency" value="moderate"></td>
+                                <td><input type="radio" name="fluency" value="severe"></td>
+                                <td><input type="checkbox" name="fluency_na"> N/A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sensory/Motor Section -->
+            <div class="section">
+                <div class="section-header">SENSORY / MOTOR</div>
+                <div class="section-content">
+                    <h4>Hearing</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-normal">
+                            <label for="hearing-normal">Normal</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-mild">
+                            <label for="hearing-mild">Mild loss</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-moderate">
+                            <label for="hearing-moderate">Moderate loss</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-severe">
+                            <label for="hearing-severe">Severe loss</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-profound">
+                            <label for="hearing-profound">Profound loss</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-uncertain">
+                            <label for="hearing-uncertain">Uncertain</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="hearing-may">
+                            <label for="hearing-may">May hear yet not react</label>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Vision</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vision-functional">
+                            <label for="vision-functional">Functional</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vision-possible">
+                            <label for="vision-possible">Possible loss</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vision-medical">
+                            <label for="vision-medical">Medical condition</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vision-blindness">
+                            <label for="vision-blindness">Blindness</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="vision-impaired">
+                            <label for="vision-impaired">Impaired</label>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Motor Skills</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="motor-ambulatory">
+                            <label for="motor-ambulatory">Ambulatory</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="motor-poor-coord">
+                            <label for="motor-poor-coord">Poor coordination</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="motor-poor-balance">
+                            <label for="motor-poor-balance">Poor balance</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="motor-non-ambulatory">
+                            <label for="motor-non-ambulatory">Non-ambulatory</label>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Inappropriate Behaviors</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-stereotyped">
+                            <label for="behavior-stereotyped">Stereotyped repetitive mannerisms</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-stimulus">
+                            <label for="behavior-stimulus">Stimulus fascination</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-avoids">
+                            <label for="behavior-avoids">Avoids physical contact</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-physical">
+                            <label for="behavior-physical">Physical aggression</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-verbal">
+                            <label for="behavior-verbal">Verbal aggression</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-isolation">
+                            <label for="behavior-isolation">Social isolation/withdrawal</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-tantrums">
+                            <label for="behavior-tantrums">Tantrums</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-echolalia">
+                            <label for="behavior-echolalia">Echolalia</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-self-abuse">
+                            <label for="behavior-self-abuse">Self-abuse</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-hyperactivity">
+                            <label for="behavior-hyperactivity">Hyperactivity</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-noncompliant">
+                            <label for="behavior-noncompliant">Noncompliant</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="behavior-none">
+                            <label for="behavior-none">None reported/observed</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Communication Expression Matrix -->
+            <div class="section">
+                <div class="section-header">BASIC COMMUNICATION EXPRESSION</div>
+                <div class="section-content">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th width="25%">Type</th>
+                                <th>Expresses Choices</th>
+                                <th>Expresses Pleasure/Discomfort</th>
+                                <th>Expresses Name</th>
+                                <th>Labels Objects</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Attempts Speech</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Speaks</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Imitates Speech</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Sign Language</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Fingerspells</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Alphabet Set</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Writes</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Types</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Picture System/PECS</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Word System</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Eye Gaze</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Communication Device</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Facilitation</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Vocalizes</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Points/Gestures</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Facial Expression</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Takes Object</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Body Movements</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Shows ID Tag/Card</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Head Nod Answer</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                            <tr>
+                                <td>Not Expressed</td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                                <td><input type="checkbox"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Receptive Language Section -->
+            <div class="section">
+                <div class="section-header">RECEPTIVE LANGUAGE</div>
+                <div class="section-content">
+                    <h4>Basic Concepts Understood (Check all that apply)</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-colors">
+                            <label for="concept-colors">Colors</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-body">
+                            <label for="concept-body">Body parts</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-size">
+                            <label for="concept-size">Size</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-shape">
+                            <label for="concept-shape">Shape</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-money">
+                            <label for="concept-money">Money</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-function">
+                            <label for="concept-function">Object function</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-prepositions">
+                            <label for="concept-prepositions">Prepositions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-categories">
+                            <label for="concept-categories">Categories</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-same">
+                            <label for="concept-same">Same/different</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-moreless">
+                            <label for="concept-moreless">More/less</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-opposites">
+                            <label for="concept-opposites">Opposites/synonyms</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-howmany">
+                            <label for="concept-howmany">How many</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-emotions">
+                            <label for="concept-emotions">Emotions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-property">
+                            <label for="concept-property">Physical property</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-time">
+                            <label for="concept-time">Time</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="concept-quantity">
+                            <label for="concept-quantity">Quantity</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pragmatic/Social Language Section -->
+            <div class="section">
+                <div class="section-header">PRAGMATIC/SOCIAL LANGUAGE</div>
+                <div class="section-content">
+                    <h4>Communicative Intent (Check all that apply)</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-request">
+                            <label for="intent-request">Request item/action</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-call">
+                            <label for="intent-call">Call/summon</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-compliment">
+                            <label for="intent-compliment">Compliment/praise</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-deny">
+                            <label for="intent-deny">Deny/negate</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-more">
+                            <label for="intent-more">Ask for 'more'</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-attention">
+                            <label for="intent-attention">Gain attention</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-protest">
+                            <label for="intent-protest">Protest/resist</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-greet">
+                            <label for="intent-greet">Greet/take leave</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-command">
+                            <label for="intent-command">Command</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-socialize">
+                            <label for="intent-socialize">Socialize</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-inform">
+                            <label for="intent-inform">Inform about self</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-comment">
+                            <label for="intent-comment">Comment</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-agree">
+                            <label for="intent-agree">Agree</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-argue">
+                            <label for="intent-argue">Argue or disagree</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-inquire">
+                            <label for="intent-inquire">Inquire</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intent-none">
+                            <label for="intent-none">None demonstrated</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speech Section -->
+            <div class="section">
+                <div class="section-header">SPEECH</div>
+                <div class="section-content">
+                    <h4>Intelligibility</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-easily">
+                            <label for="intel-easily">Easily understood by others</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-minor">
+                            <label for="intel-minor">Understood w/minor difficulty</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-moderate">
+                            <label for="intel-moderate">Understood w/moderate difficulty</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-major">
+                            <label for="intel-major">Understood w/major difficulty</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-not">
+                            <label for="intel-not">Not understandable</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="intel-nonverbal">
+                            <label for="intel-nonverbal">Nonverbal or n/a</label>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top: 20px;">Sounds Produced</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-beginning">
+                            <label for="sounds-beginning">Beginning (vowels, p, b, m, h, w, n, ng)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-intermediate">
+                            <label for="sounds-intermediate">Intermediate (y, k, g, f, d)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-advanced-int">
+                            <label for="sounds-advanced-int">Advanced intermediate (t, ch, r, sh, s, v, l)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-advanced">
+                            <label for="sounds-advanced">Advanced (th, j, zh, z, wh)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-blends">
+                            <label for="sounds-blends">Consonant blends</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sounds-age">
+                            <label for="sounds-age">Age appropriate</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voice Section -->
+            <div class="section">
+                <div class="section-header">VOICE</div>
+                <div class="section-content">
+                    <table class="assessment-table">
+                        <thead>
+                            <tr>
+                                <th width="25%">Aspect</th>
+                                <th>Characteristics (Check all that apply)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Loudness</strong></td>
+                                <td>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Adequate</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Excessive</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Low intensity</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Monoloudness</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Variable</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Inadequate</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vocal Quality</strong></td>
+                                <td>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Normal</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Nasal</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Hoarse</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Harsh</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Strained</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Breathy</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Whispered</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pitch</strong></td>
+                                <td>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Appropriate</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Higher than normal</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Lower range</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Variable</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Monotone</label>
+                                    <label style="margin-right: 15px;"><input type="checkbox"> Immature for age</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Oral Section -->
+            <div class="section">
+                <div class="section-header">ORAL</div>
+                <div class="section-content">
+                    <h4>Swallowing & Diet</h4>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-gastrostomy">
+                            <label for="swallow-gastrostomy">Gastrostomy tube</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-aspiration">
+                            <label for="swallow-aspiration">Aspiration risk</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-adequate">
+                            <label for="swallow-adequate">Adequate chew/swallow</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-pureed">
+                            <label for="swallow-pureed">Pureed texture</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-ground">
+                            <label for="swallow-ground">Ground texture</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-chopped">
+                            <label for="swallow-chopped">Chopped texture</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-mechanical">
+                            <label for="swallow-mechanical">Mechanical soft</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-thickened">
+                            <label for="swallow-thickened">Thickened liquids</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-spillage">
+                            <label for="swallow-spillage">Spillage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-pocketing">
+                            <label for="swallow-pocketing">Food pocketing</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-coughing">
+                            <label for="swallow-coughing">Coughing observed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="swallow-rapid">
+                            <label for="swallow-rapid">Rapid eating/stuffing</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fluency Section -->
+            <div class="section">
+                <div class="section-header">FLUENCY</div>
+                <div class="section-content">
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-adequate">
+                            <label for="fluency-adequate">Adequate</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-repetitions">
+                            <label for="fluency-repetitions">Repetitions</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-blocks">
+                            <label for="fluency-blocks">Blocks</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-prolongations">
+                            <label for="fluency-prolongations">Prolongations</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-halting">
+                            <label for="fluency-halting">Halting</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-nonverbal">
+                            <label for="fluency-nonverbal">Nonverbal</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fluency-pauses">
+                            <label for="fluency-pauses">Irregular pauses</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section">
+                <div class="section-header">SUMMARY</div>
+                <div class="section-content">
+                    <h4>Relevant History</h4>
+                    <textarea placeholder="Enter relevant history information..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Test Results</h4>
+                    <textarea placeholder="Enter test results..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Current Communication</h4>
+                    <textarea placeholder="Describe current communication abilities..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Objectives</h4>
+                    <textarea placeholder="Enter communication objectives..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Communication Strengths</h4>
+                    <textarea placeholder="Describe communication strengths..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Communication Weaknesses/Needs</h4>
+                    <textarea placeholder="Describe communication weaknesses and needs..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">General Intervention Strategies</h4>
+                    <textarea placeholder="Describe intervention strategies..."></textarea>
+                    
+                    <h4 style="margin-top: 20px;">Recommendations, Progress, Referrals & Medical Necessity</h4>
+                    <textarea placeholder="Enter recommendations and notes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Evaluator Information -->
+            <div class="section">
